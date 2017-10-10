@@ -46,7 +46,17 @@ namespace FizzBuzz_Extended
             rangeStart = 1;
             rangeEnd = 100;
 
+            if (!File.Exists(file))
+            {
+                Console.WriteLine("File " + file + " does not exist. Initializing with default values.");
+                GetReplacement("3:Fizz", replacemenDictionary);
+                GetReplacement("5:Buzz", replacemenDictionary);
+
+                return;
+            }
+
             int currentLine = 0;
+
             foreach (string line in File.ReadLines(file))
             {
                 if (currentLine == 0)
