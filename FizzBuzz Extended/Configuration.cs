@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FizzBuzz_Extended
 {
-    struct Configuration
+    public struct Configuration
     {
         private readonly Range _range;
         private readonly Dictionary<Int32, String> _replacements;
@@ -33,7 +32,7 @@ namespace FizzBuzz_Extended
         }
     }
 
-    struct Range
+    public struct Range
     {
         private readonly int _startRange;
         private readonly int _endRange;

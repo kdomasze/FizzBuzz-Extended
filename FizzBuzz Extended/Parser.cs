@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace FizzBuzz_Extended
 {
-    sealed class Parser
+    public static class Parser
     {
         public static Configuration Parse(string file)
         {
@@ -38,7 +37,11 @@ namespace FizzBuzz_Extended
                 else if (!String.IsNullOrEmpty(line)) // all other non-empty lines are replacements
                 {
                     var replacement = GetReplacement(line);
-                    replacementDictionary.Add(replacement.Key, replacement.Value);
+
+                    if (replacement.Value != null)
+                    {
+                        replacementDictionary.Add(replacement.Key, replacement.Value);
+                    }
                 }
 
                 currentLine++;
@@ -53,14 +56,26 @@ namespace FizzBuzz_Extended
 
             string[] range = line.Split('-');
 
-            if (!Int32.TryParse(range[0], out start))
+            if (range.Length == 2)
             {
-                Console.WriteLine("Failed to parse start range: " + range[0] + ". Initializing with default value of " + start + ".\n");
-            }
+                if (!Int32.TryParse(range[0], out start))
+                {
+                    Console.WriteLine("Failed to parse start range: " + range[0] +
+                                      ". Initializing with default value of " + start + ".\n");
+                }
 
-            if (!Int32.TryParse(range[1], out end))
+                if (!Int32.TryParse(range[1], out end))
+                {
+                    Console.WriteLine("Failed to parse end range: " + range[1] +
+                                      ". Initializing with default value of " + end + ".\n");
+                }
+            }
+            else
             {
-                Console.WriteLine("Failed to parse end range: " + range[1] + ". Initializing with default value of " + end + ".\n");
+                start = 1;
+                end = 100;
+                Console.WriteLine("Failed to parse line: \"" + line + 
+                    "\". Initializing with default values. Start: " + start + ", End: " + end + ".\n");
             }
 
             return new Range(start, end);
@@ -69,13 +84,23 @@ namespace FizzBuzz_Extended
         static KeyValuePair<Int32, String> GetReplacement(string line)
         {
             string[] replacement = line.Split(':');
-            
             int replaceValue;
-            if (!Int32.TryParse(replacement[0], out replaceValue))
+
+            if (replacement.Length == 2)
             {
-                Console.WriteLine("Failed to parse replace value: " + replacement[0] + ". Skipping entry.\n");
+                
+                if (!Int32.TryParse(replacement[0], out replaceValue))
+                {
+                    Console.WriteLine("Failed to parse line: \"" + line + "\". Skipping entry.\n");
+                    return new KeyValuePair<int, string>(-1, null); // config will handle null values by discarding them
+                }
+            }
+            else
+            {
+                Console.WriteLine("Failed to parse line: \"" + line + "\". Skipping entry.\n");
                 return new KeyValuePair<int, string>(-1, null); // config will handle null values by discarding them
             }
+            
 
             string replaceWord = replacement[1];
 
